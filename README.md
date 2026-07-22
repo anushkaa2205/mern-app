@@ -1,8 +1,33 @@
-# MERN Blog
+# MERN Blog — Deployed to AWS EKS
 
-A small blog app built with MongoDB, Express, React (Vite), and Node.
+A full-stack **MERN** blog application (MongoDB, Express, React, Node), containerized with Docker and deployed to a production **Kubernetes cluster on Amazon EKS**, served publicly through an AWS Load Balancer.
 
-## Features
+![Stack](https://img.shields.io/badge/stack-MERN-informational) ![AWS EKS](https://img.shields.io/badge/deployed-AWS%20EKS-ff9900) ![Docker](https://img.shields.io/badge/containers-Docker-2496ed) ![Kubernetes](https://img.shields.io/badge/orchestration-Kubernetes-326ce5) ![CI](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088ff)
+
+```
+React (Vite) + nginx  →  Express API  →  MongoDB Atlas
+        all running as pods on Amazon EKS
+```
+
+**What this project demonstrates**
+
+- Containerizing a multi-service application with Docker, using multi-stage builds to keep production images small
+- Pushing images to a private registry (**Amazon ECR**) and pulling them into a cluster
+- Provisioning managed Kubernetes on **Amazon EKS** with `eksctl`
+- Core Kubernetes objects: Deployments, Services (ClusterIP vs LoadBalancer), Secrets, and health probes
+- In-cluster service discovery — nginx reaching the API by Kubernetes DNS name
+- Injecting credentials via Kubernetes Secrets rather than baking them into images
+- **CI/CD** with GitHub Actions: build → push to ECR → roll out to EKS on every push to `main`
+- Diagnosing real failures from pod logs, events, and CloudFormation/ASG activity
+- Cloud cost awareness and responsible teardown
+
+Deployment details are in [Cloud Deployment — AWS EKS](#cloud-deployment--aws-eks) below. The sections immediately following cover running the app locally.
+
+---
+
+## The application
+
+A small blog with full CRUD on posts.
 
 - List, create, edit, and delete blog posts
 - No authentication — single-user, open access
@@ -14,16 +39,20 @@ A small blog app built with MongoDB, Express, React (Vite), and Node.
 mern-blog/
   server/   Express + Mongoose API
   client/   React (Vite) frontend
+  k8s/      Kubernetes manifests (Deployments, Services, Secret template)
+  .github/  GitHub Actions CI/CD pipeline
 ```
 
-## Prerequisites
+## Running locally
+
+### Prerequisites
 
 - Node.js 18+
 - MongoDB running locally, or a MongoDB Atlas connection string
 
-## Setup
+### Setup
 
-### 1. Backend
+#### 1. Backend
 
 ```
 cd server
@@ -35,7 +64,7 @@ npm run dev
 
 Runs on http://localhost:5000.
 
-### 2. Frontend
+#### 2. Frontend
 
 In a second terminal:
 
