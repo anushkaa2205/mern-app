@@ -1,0 +1,63 @@
+name: Build, Push to ECR, Deploy to EKS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+env:
+  AWS_REGION: us-east-1
+  ECR_SERVER_REPO: mern-blog-server
+  ECR_CLIENT_REPO: mern-blog-client
+  EKS_CLUSTER_NAME: mern-blog-cluster
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push backend image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          docker build -t $REGISTRY/$ECR_SERVER_REPO:${{ github.sha }} -t $REGISTRY/$ECR_SERVER_REPO:latest ./server
+          docker push $REGISTRY/$ECR_SERVER_REPO:${{ github.sha }}
+          docker push $REGISTRY/$ECR_SERVER_REPO:latest
+
+      - name: Build and push frontend image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          docker build -t $REGISTRY/$ECR_CLIENT_REPO:${{ github.sha }} -t $REGISTRY/$ECR_CLIENT_REPO:latest ./client
+          docker push $REGISTRY/$ECR_CLIENT_REPO:${{ github.sha }}
+          docker push $REGISTRY/$ECR_CLIENT_REPO:latest
+
+      # The steps below only work once the EKS cluster exists (Stage E) and
+      # kubectl is available. Until then, this job stops being useful after
+      # the image push above -- that's fine, it still gets images into ECR.
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+        continue-on-error: true
+
+      - name: Roll out new images
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        continue-on-error: true
+        run: |
+          kubectl set image deployment/backend-deployment backend=$REGISTRY/$ECR_SERVER_REPO:${{ github.sha }}
+          kubectl set image deployment/frontend-deployment frontend=$REGISTRY/$ECR_CLIENT_REPO:${{ github.sha }}
+          kubectl rollout status deployment/backend-deployment
+          kubectl rollout status deployment/frontend-deployment
