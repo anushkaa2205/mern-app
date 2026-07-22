@@ -1,7 +1,14 @@
 require('dotenv').config();
+const dns = require('dns');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+
+// Node's built-in DNS resolver can fail to reach the DNS server Windows
+// hands it (e.g. a link-local IPv6 address), which breaks the SRV lookups
+// that mongodb+srv:// connection strings rely on even though the OS
+// resolver works fine. Point Node at public resolvers to avoid that.
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const postRoutes = require('./routes/posts');
 

@@ -44,7 +44,11 @@
       "Bash(curl -sf http://localhost:5173/)",
       "Read(//tmp/mern-blog-server-logs/**)",
       "PowerShell(Start-Process \"http://localhost:5173/\")",
-      "Bash(curl -s -X POST http://localhost:5000/api/posts -H \"Content-Type: application/json\" -d '{\"title\":\"Welcome to my Blog\",\"content\":\"This is the first real post to check the redesigned UI end to end. It should render nicely as a card with an avatar, gradient title link, and proper spacing.\",\"author\":\"Ankita\"}')"
+      "Bash(curl -s -X POST http://localhost:5000/api/posts -H \"Content-Type: application/json\" -d '{\"title\":\"Welcome to my Blog\",\"content\":\"This is the first real post to check the redesigned UI end to end. It should render nicely as a card with an avatar, gradient title link, and proper spacing.\",\"author\":\"Ankita\"}')",
+      "Bash(cd C:\\\\Users\\\\Win11\\\\Desktop\\\\awsTodo\\\\mern-blog\\\\server *)",
+      "Bash(nslookup -type=SRV _mongodb._tcp.cluster0.op6zoxl.mongodb.net)",
+      "Bash(ping -n 2 8.8.8.8)",
+      "Bash(node *)"
     ]
   }
 }
