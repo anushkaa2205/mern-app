@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: backend-deployment
 spec:
-  replicas: 2
+  # 1 replica: t3.micro nodes allow only 4 pods each (VPC CNI ENI limit),
+  # and system DaemonSets consume most of that budget.
+  replicas: 1
   selector:
     matchLabels:
       app: backend
