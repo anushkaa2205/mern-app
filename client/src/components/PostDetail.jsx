@@ -31,7 +31,7 @@ function PostDetail() {
   }
 
   return (
-    <div className="post-card">
+    <div className="post-card post-detail">
       <h2>{post.title}</h2>
       <div className="meta">
         <span className="avatar">
