@@ -48,26 +48,21 @@ function PostList() {
       {error && <div className="error-banner">{error}</div>}
       {posts.length === 0 && !error ? (
         <div className="empty-state">
-          <p>Nothing on the record yet.</p>
+          <p>Nothing posted yet.</p>
           <Link to="/new" className="btn primary">
-            Write the first entry
+            Say something
           </Link>
         </div>
       ) : (
         <>
           {!error && (
             <div className="posts-toolbar">
-              <h2>Index</h2>
-              <span className="count">
-                {posts.length} {posts.length === 1 ? 'entry' : 'entries'}
-              </span>
+              <h2>Latest</h2>
+              <span className="count">{posts.length}</span>
             </div>
           )}
-          {posts.map((post, i) => (
+          {posts.map((post) => (
             <div className="post-card" key={post._id}>
-              <span className="index-no mono">
-                {String(posts.length - i).padStart(2, '0')}
-              </span>
               <h2>
                 <Link to={`/posts/${post._id}`}>{post.title}</Link>
               </h2>

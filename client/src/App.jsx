@@ -8,11 +8,11 @@ function App() {
     <div>
       <header className="site-header">
         <Link to="/" className="brand">
-          <h1>Field Notes</h1>
-          <span className="tagline">Vol. 01 — dispatches &amp; drafts</span>
+          <h1>Noise</h1>
+          <span className="tagline">unfiltered posts</span>
         </Link>
         <Link to="/new" className="btn primary">
-          + New Post
+          + Post
         </Link>
       </header>
       <div className="container">

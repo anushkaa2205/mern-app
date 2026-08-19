@@ -75,7 +75,7 @@ function PostForm({ mode }) {
       </div>
       <div className="form-actions">
         <button type="submit" className="btn primary">
-          {mode === 'edit' ? 'Save Changes' : 'Publish Entry'}
+          {mode === 'edit' ? 'Save' : 'Post It'}
         </button>
       </div>
     </form>
